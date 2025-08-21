@@ -14,4 +14,5 @@ spatialkernel <- function (d, kappa=1) {
 set.seed(3)
 source("simulator.R")
 exampleepidemic <- simulate_epidemic(examplecoords, N = 30, alpha = 1.5,
-                                     beta = 0.3, ki = 0.75, thetai = 1, latencyperiod = 1, K=spatialkernel)
+                                     beta = 0.3, ki = 0.75, thetai = 1, 
+                                     latencyperiod = 1, ps=0.5, K=spatialkernel)

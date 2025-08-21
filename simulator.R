@@ -1,125 +1,97 @@
-function (M, N, beta, ki, thetai, ke = ki, thetae = thetai, latencydist = "fixed", 
-          latencyperiod = 0) 
+simulate_epidemic <- function (C, N, alpha, beta, ki, thetai, ke = ki, thetae = thetai, latencyperiod = 0, K) 
 {
-  if (!is.null(M)) {
-    if (!is.matrix(M)) 
-      stop("Input error: Network M must be an edgelist matrix.")
-    if ((length(dim(M)) != 2) || (dim(M)[2] != 2)) 
-      stop("Input error: Network M must an a 2-dimensional edgelist matrix.")
+  # alpha = infection rate
+  # beta = contact parameter
+  
+  if (!is.null(C)) {
+    if (!is.list(C)) 
+      stop("Input error: C must be a list.")
+    if ((length(C) != N) && all(sapply(C, function(x) is.numeric(x) && length(x) == 2)))
+      stop("Input error: Vector C.")
   }
-  net = network::network.initialize(N, directed = FALSE)
-  network::add.edges(net, head = M[, 1], tail = M[, 2])
-  t_net = array(FALSE, network::network.edgecount(net))
-  all_edge = unlist(net$mel)
-  v1 = all_edge[seq(1, length(all_edge), by = 3)]
-  v2 = all_edge[seq(2, length(all_edge), by = 3)]
-  is_infectious = is_exposed = is_removed = array(FALSE, N)
-  is_susceptible = array(TRUE, N)
+  
+  coords_mat <- do.call(rbind, examplecoords)
+  # Compute Euclidean distance matrix
+  dist_matr <- as.matrix(dist(coords_mat))
+  
+  # infectious thresholds
+  thresholds <- rexp(N, rate = 1)
+  
+  # initialize arrays
+  infectious <- exposed <- removed <- c()
+  susceptible <- array(1:N)
+  
+  # initialize first infection
   init <- sample(1:N, 1)
-  is_infectious[init] = TRUE
-  is_susceptible[init] = FALSE
-  neighbour_id = network::get.edgeIDs(net, init)
-  susc_neighbour_id = neighbour_id[is_susceptible[v1[neighbour_id]] | 
-                                     is_susceptible[v2[neighbour_id]]]
-  t_net[susc_neighbour_id] = TRUE
-  t.time = array(dim = N)
-  r.time = array(dim = N)
-  t.time[init] <- ifelse(latencydist == "fixed", latencyperiod, 
-                         rgamma(1, ke, scale = thetae))
-  r.time[init] = rgamma(1, ki, scale = thetai) + t.time[init]
-  nextrec = init
-  inf.list <- matrix(c(init, NA, 0, t.time[init], NA), nrow = 1)
-  time <- cm.time <- t.time[init]
-  nexttrans = init
-  t.time[init] <- Inf
-  count_i = 1
-  count_e = 0
-  for (i in 2:(N * 3)) {
-    n.si = sum(t_net)
-    dwt <- ifelse(count_i > 0, r.time[nextrec] - cm.time, 
-                  Inf)
-    bwt <- ifelse(n.si != 0, rexp(1, beta * n.si), Inf)
-    twt <- t.time[nexttrans] - cm.time
-    ewt <- min(bwt, dwt, twt, na.rm = TRUE)
-    time <- c(time, ewt)
-    cm.time <- cm.time + ewt
-    if (ewt == bwt) {
-      test <- "Infect"
-    }
-    else if (ewt == dwt) {
-      test <- "removal"
-    }
-    else {
-      test <- "transition"
-    }
-    if (test == "Infect") {
-      trans_edge_id = ifelse(n.si > 1, sample(which(t_net), 
-                                              1), which(t_net))
-      if (is_susceptible[v1[trans_edge_id]]) {
-        new.inf = v1[trans_edge_id]
-        parent = v2[trans_edge_id]
-      }
-      else {
-        new.inf = v2[trans_edge_id]
-        parent = v1[trans_edge_id]
-      }
-      lat <- ifelse(latencydist == "fixed", latencyperiod, 
-                    rgamma(1, ke, scale = thetae))
-      t.time[new.inf] <- cm.time + lat
-      is_exposed[new.inf] = TRUE
-      is_susceptible[new.inf] = FALSE
-      count_e = count_e + 1
-      t_net[network::get.edgeIDs(net, new.inf)] = FALSE
-      inf.list <- rbind(inf.list, c(new.inf, parent, cm.time, 
-                                    NA, NA))
-      nexttrans <- which(t.time == min(t.time, na.rm = TRUE))
-    }
-    else if (test == "removal") {
-      if (i == 2) {
-        inf.list[1, 5] <- cm.time
-        break
-      }
-      new.rec <- nextrec
-      is_infectious[new.rec] = FALSE
-      is_removed[new.rec] = TRUE
-      count_i = count_i - 1
-      t_net[network::get.edgeIDs(net, new.rec)] = FALSE
-      inf.list[which(inf.list[, 1] == new.rec), 5] <- cm.time
-      r.time[nextrec] <- NA
-      if (count_i > 0) 
-        nextrec <- which(r.time == min(r.time, na.rm = TRUE))
-      else if (count_e > 0) {
-        nextrec <- which(t.time == min(t.time, na.rm = TRUE))
-        r.time[nextrec] <- Inf
+  infectious <- append(infectious, init)
+  susceptible <- susceptible[!(susceptible == init)]
+  
+  # time of exposures
+  exposure.time <- rep(Inf, N)
+  # time of infections
+  infectious.time <- rep(Inf, N)
+  # time of recoveries
+  removal.time <- rep(Inf, N)
+  
+  # exposure time of init
+  exposure.time[init] <- rgamma(1, ke, scale = thetae)
+  # infectious time of init
+  infectious.time[init] <- rgamma(1, ki, scale = thetai) + exposure.time[init]
+  
+  # create infection list
+  infections.list <- matrix(c(init, NA, 0, infectious.time[init], NA), nrow = 1)
+  
+  # get time
+  t <- infectious.time[init]
+  
+  # simulate rest of outbreak
+  for (x in 2:N+1) {
+    
+    # waiting time for infection s -> e 
+    min.event.time = Inf
+    for (j in susceptible){
+      # calculate infectious pressure
+      pressure <- thresholds[j] - alpha*t -
+      beta*sum(sapply(infectious, function(i) K(dist_matr[i, j])*(min(t, removal.time[i])-infectious.time[i])))
+      # calculate infection time
+      event.time <- pressure / (alpha + beta*sum(sapply(infectious, function(i) K(dist_matr[i, j])))) + t
+      #print(event.time)
+      # update soonest infection event
+      if (event.time < min.event.time) {
+        min.event.time <- event.time
+        next.infected <- j
       }
     }
-    else {
-      new.trans <- nexttrans
-      is_exposed[new.trans] = FALSE
-      is_infectious[new.trans] = TRUE
-      count_i = count_i + 1
-      count_e = count_e - 1
-      neighbour_id = network::get.edgeIDs(net, new.trans)
-      susc_neighbour_id = neighbour_id[is_susceptible[v1[neighbour_id]] | 
-                                         is_susceptible[v2[neighbour_id]]]
-      t_net[susc_neighbour_id] = TRUE
-      inf.list[which(inf.list[, 1] == new.trans), 4] <- cm.time
-      t.time[nexttrans] <- NA
-      nexttrans <- which(t.time == min(t.time, na.rm = TRUE))
-      r.time[new.trans] <- cm.time + rgamma(1, ki, scale = thetai)
-      if (r.time[new.trans] < r.time[nextrec]) 
-        nextrec <- new.trans
+    
+    t <- min.event.time
+    
+    # update times for newly infected individual
+    exposure.time[next.infected] <- t
+    infectious.time[next.infected] = rgamma(1, ke, scale = thetae) + exposure.time[next.infected]
+    removal.time[next.infected] = rgamma(1, ki, scale = thetai) + infectious.time[next.infected]
+    
+    susceptible <- susceptible[!(susceptible == next.infected)]
+    exposed <- append(exposed, next.infected)
+    
+    # update compartments
+    for (ind in exposed) {
+      if (infectious.time[ind] <= t) { 
+        infectious <- append(infectious, ind)
+        susceptible <- susceptible[!(susceptible == ind)]
+      }
+      if (removal.time[ind] <= t) {
+        removed <- append(removed, ind)
+        infectious <- infectious[!(infectious == ind)]
+      }
     }
-    if (count_e + count_i == 0) {
-      break
-    }
+    
+    # update infectious list
+    #infections.list[which(infections.list[, 1] == new.trans), 4] <- cm.time
+    print(t)
   }
-  inf.list[, 3:5] <- inf.list[, 3:5] - min(inf.list[, 5])
-  if (any(is_susceptible)) 
-    inf.list <- rbind(inf.list, cbind(which(is_susceptible), 
-                                      NA, NA, NA, NA))
-  colnames(inf.list) <- c("Node ID", "Parent", "Etime", "Itime", 
-                          "Rtime")
-  class(inf.list) <- c("epidemic", "matrix")
-  return(inf.list)
+    
+  print(exposure.time)
+  print(infectious.time)  
+  print(removal.time)
+  return(infections.list)
 }

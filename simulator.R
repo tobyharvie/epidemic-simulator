@@ -63,6 +63,16 @@ simulate_epidemic <- function (C, N, alpha, beta, ki, thetai, ke = ki, thetae = 
       }
     }
     
+    if (length(infectious) > 1) {
+      dists <- dist_matr[next.infected, infectious]
+      # inverse distance
+      probs <- 1 / dists       
+      probs <- probs / sum(probs)
+      donor <- sample(infectious, size=1, prob=probs)
+      print(probs)
+    }
+    else { donor <- infectious[1]}
+    
     t <- min.event.time
     
     # update times for newly infected individual
@@ -70,6 +80,7 @@ simulate_epidemic <- function (C, N, alpha, beta, ki, thetai, ke = ki, thetae = 
     infectious.time[next.infected] = rgamma(1, ke, scale = thetae) + exposure.time[next.infected]
     removal.time[next.infected] = rgamma(1, ki, scale = thetai) + infectious.time[next.infected]
     
+    infections.list <- rbind(infections.list, c(next.infected, donor, exposure.time[next.infected], infectious.time[next.infected], removal.time[next.infected]))
     susceptible <- susceptible[!(susceptible == next.infected)]
     exposed <- append(exposed, next.infected)
     
@@ -77,7 +88,7 @@ simulate_epidemic <- function (C, N, alpha, beta, ki, thetai, ke = ki, thetae = 
     for (ind in exposed) {
       if (infectious.time[ind] <= t) { 
         infectious <- append(infectious, ind)
-        susceptible <- susceptible[!(susceptible == ind)]
+        exposed <- exposed[!(exposed == ind)]
       }
       if (removal.time[ind] <= t) {
         removed <- append(removed, ind)
@@ -87,11 +98,7 @@ simulate_epidemic <- function (C, N, alpha, beta, ki, thetai, ke = ki, thetae = 
     
     # update infectious list
     #infections.list[which(infections.list[, 1] == new.trans), 4] <- cm.time
-    print(t)
   }
     
-  print(exposure.time)
-  print(infectious.time)  
-  print(removal.time)
   return(infections.list)
 }

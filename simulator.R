@@ -25,7 +25,7 @@ simulate_epidemic <- function (C, N, alpha, beta, ki, thetai, ke = ki, thetae = 
   infectious_times <- rep(Inf, N)
   sampling_times <- rep(Inf, N)
   removal_times <- rep(Inf, N)
-  
+
   # initialize first infection
   init <- sample(1:N, 1)
   infectious <- append(infectious, init)
@@ -43,7 +43,7 @@ simulate_epidemic <- function (C, N, alpha, beta, ki, thetai, ke = ki, thetae = 
   
   # set current time
   t <- infectious_times[init]
-  
+
   # simulate rest of outbreak
   for (x in 2:N+1) {
     

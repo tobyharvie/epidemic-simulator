@@ -1,16 +1,9 @@
-simulate_epidemic <- function (C, N, alpha, beta, ki, thetai, ke = ki, thetae = thetai, ps, thetas= thetai, ks= ki, latencyperiod = 0, K) 
+simulate_epidemic <- function (C, N, alpha, beta, ki, thetai, ke = ki, thetae = thetai, ps, thetas= thetai, ks= ki, K) 
 {
   # TO DO: choose realisitic parameters
   
-  if (!is.null(C)) {
-    if (!is.list(C)) 
-      stop("Input error: C must be a list.")
-    if ((length(C) != N) && all(sapply(C, function(x) is.numeric(x) && length(x) == 2)))
-      stop("Input error: Vector C.")
-  }
-  
-  coords_mat <- do.call(rbind, examplecoords)
   # Compute Euclidean distance matrix
+  coords_mat <- do.call(rbind, examplecoords)
   dist_matr <- as.matrix(dist(coords_mat))
   
   # SEIR compartment sets
@@ -39,7 +32,7 @@ simulate_epidemic <- function (C, N, alpha, beta, ki, thetai, ke = ki, thetae = 
   removal_times[init] <- min(rgamma(1, ki, scale = thetai) + infectious_times[init], sampling_times)
   
   # create infection list (Node index, donor index, exposed time, infectious time, removed time, sampled time)
-  infections_list <- matrix(c(init, NA, 0, infectious_times[init], NA, NA), nrow = 1)
+  infections_list <- matrix(c(init, NA, 0, infectious_times[init], removal_times[init], NA), nrow = 1)
   
   # set current time
   t <- infectious_times[init]
@@ -56,6 +49,7 @@ simulate_epidemic <- function (C, N, alpha, beta, ki, thetai, ke = ki, thetae = 
       # calculate infection time
       event_time <- pressure / (alpha + beta*sum(sapply(infectious, function(i) K(dist_matr[i, j])))) + t
       # choose soonest infection event
+      
       if (event_time < min_event_time) {
         min_event_time <- event_time
         next_infected <- j

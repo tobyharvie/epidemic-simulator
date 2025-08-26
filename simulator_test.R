@@ -1,24 +1,23 @@
 # Simulate an epidemic through a network of 30
 n_pop <- 30
-examplecoords <- lapply(1:N, function(i) c(runif(1), runif(1)))
+examplecoords <- lapply(1:n_pop, function(i) c(runif(1), runif(1)))
 spatialkernel <- function (d, kappa=1) {
   return(exp(-kappa * d))
 }
-set.seed(3)
-library
+#set.seed(101)
+library(epinet)
 source("simulator.R")
 epi <- simulate_epidemic(
   C = examplecoords, 
   N = n_pop, 
-  alpha = 1.5,
-  beta = 10, 
+  beta = 1,
   ki = 3, 
   thetai = 7, 
-  ke = 3,
-  thetae = 1,
+  ke = 1,
+  thetae = 7,
   ps = 0.5,
-  thetas = 2, 
-  ks = 0.75,
+  thetas = 5, 
+  ks = 4,
   K = spatialkernel
 )
 

@@ -1,6 +1,7 @@
-simulate_epidemic <- function (C, N, alpha, beta, ki, thetai, ke = ki, thetae = thetai, ps, thetas= thetai, ks= ki, K) 
+
+
+simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai, ps, thetas= thetai, ks= ki, K) 
 {
-  # TO DO: choose realisitic parameters
   
   # Compute Euclidean distance matrix
   coords_mat <- do.call(rbind, examplecoords)
@@ -25,73 +26,91 @@ simulate_epidemic <- function (C, N, alpha, beta, ki, thetai, ke = ki, thetae = 
   susceptible <- susceptible[!(susceptible == init)]
   
   # times for first infected
-  exposure_times[init] <- rgamma(1, ke, scale = thetae)
-  infectious_times[init] <- rgamma(1, ki, scale = thetai) + exposure_times[init]
+  exposure_times[init] <- 0
+  infectious_times[init] <- rgamma(1, ke, scale = thetae) + exposure_times[init]
   sampling <- rbinom(n = 1, size = 1, prob = ps)
-  sampling_times[init] <- ifelse(sampling, rgamma(1, ks, scale = thetas) + exposure_times[init], Inf)
+  sampling_times[init] <- Inf #ifelse(sampling, rgamma(1, ks+10, scale = thetas) + exposure_times[init], Inf)
   removal_times[init] <- min(rgamma(1, ki, scale = thetai) + infectious_times[init], sampling_times)
   
   # create infection list (Node index, donor index, exposed time, infectious time, removed time, sampled time)
   infections_list <- matrix(c(init, NA, 0, infectious_times[init], removal_times[init], NA), nrow = 1)
-  
   # set current time
   t <- infectious_times[init]
 
   # simulate rest of outbreak
-  for (x in 2:N+1) {
+  for (x in 2:(3*N)) {
     
-    # waiting time for infection s -> e 
-    min_event_time = Inf
-    for (j in susceptible){
-      # calculate infectious pressure
-      pressure <- thresholds[j] - alpha*t -
-      beta*sum(sapply(infectious, function(i) K(dist_matr[i, j])*(min(t, removal_times[i])-infectious_times[i])))
-      # calculate infection time
-      event_time <- pressure / (alpha + beta*sum(sapply(infectious, function(i) K(dist_matr[i, j])))) + t
-      # choose soonest infection event
-      
-      if (event_time < min_event_time) {
-        min_event_time <- event_time
-        next_infected <- j
-      }
+    if (length(susceptible) == 0 || (length(exposed)==0 && length(infectious)==0)) {
+      break
     }
     
-    # choose donor
-    if (length(infectious) > 1) {
-      dists <- dist_matr[next_infected, infectious]
-      # inverse distance
-      probs <- 1 / dists       
+    if (length(infectious) > 0){
+      # waiting time for infection s -> e 
+      transmission_rate <- 0
+      for (j in susceptible){
+        transmission_rate <- transmission_rate + sum(sapply(infectious, function(i) K(dist_matr[i, j])))
+      }
+      transmission_rate <- transmission_rate * beta / N
+      transmission_time <- t + rexp(1, rate=transmission_rate)
+    }
+    else { transmission_time <- Inf }
+    
+    # check event time is before any other event
+    if ((length(exposed)==0 || all(transmission_time < infectious_times[exposed])) &&
+      (length(infectious)==0 || all(transmission_time < removal_times[infectious]))) {
+      # choose donor-recipient pair
+      dists <- dist_matr[susceptible, infectious, drop=FALSE]
+      probs <- 1 / dists # shorter dist = higher prob
       probs <- probs / sum(probs)
-      donor <- sample(infectious, size=1, prob=probs)
+      picked_index <- sample(length(probs), size = 1, prob = as.vector(probs))
+      pair <- arrayInd(picked_index, dim(probs))
+      next_infected <- susceptible[pair[1]]
+      donor <- infectious[pair[2]]
+    
+      # update times and compartments
+      exposure_times[next_infected] <- t
+      infectious_times[next_infected] <- rgamma(1, ke, scale = thetae) + exposure_times[next_infected]
+      sampling <- rbinom(n = 1, size = 1, prob = ps)
+      sampling_times[next_infected] <- ifelse(sampling, rgamma(1, ks, scale = thetas) + exposure_times[next_infected], Inf)
+      removal_times[next_infected] <- min(rgamma(1, ki, scale = thetai) + infectious_times[next_infected], sampling_times)
+      
+      susceptible <- susceptible[susceptible != next_infected, drop=TRUE]
+      exposed <- append(exposed, next_infected)
+    
+      infections_list <- rbind(infections_list, c(next_infected, donor, exposure_times[next_infected], infectious_times[next_infected], removal_times[next_infected], sampling_times[next_infected]))
+      t <- transmission_time
+    
     }
-    else { donor <- infectious[1]}
-    
-    t <- min_event_time
-    
-    # update times for newly infected individual
-    exposure_times[next_infected] <- t
-    infectious_times[next_infected] <- rgamma(1, ke, scale = thetae) + exposure_times[next_infected]
-    sampling <- rbinom(n = 1, size = 1, prob = ps)
-    sampling_times[next_infected] <- ifelse(sampling, rgamma(1, ks, scale = thetas) + exposure_times[next_infected], Inf)
-    removal_times[next_infected] <- min(rgamma(1, ki, scale = thetai) + infectious_times[next_infected], sampling_times)
-    
-    infections_list <- rbind(infections_list, c(next_infected, donor, exposure_times[next_infected], infectious_times[next_infected], removal_times[next_infected], sampling_times[next_infected]))
-    
-    # update compartments
-    susceptible <- susceptible[!(susceptible == next_infected)]
-    exposed <- append(exposed, next_infected)
-    for (ind in exposed) {
-      if (infectious_times[ind] <= t) { 
+    # else another event occurs first (e -> i or i -> r)
+    else{
+      # future fix: refactor to be a bit cleaner
+      min_exposed <- min(exposure_times[exposure_times > t], Inf)
+      min_infectious <- min(infectious_times[infectious_times > t], Inf)
+      min_removal <-min(removal_times[removal_times > t], Inf)
+      if (min_exposed < min_infectious && min_exposed < min_removal) {
+        ind <- match(min_exposed, exposure_times)
+        susceptible <- susceptible[susceptible != ind, drop=TRUE]
+        exposed <- append(exposed, ind)
+        t <- min_exposed
+      }
+      else if (min_infectious < min_removal) {
+        ind <- match(min_infectious, infectious_times)
+        exposed <- exposed[exposed != ind, drop=TRUE]
         infectious <- append(infectious, ind)
-        exposed <- exposed[!(exposed == ind)]
+        t <- min_infectious
       }
-      if (removal_times[ind] <= t) {
-        removed <- append(removed, ind)
-        infectious <- infectious[!(infectious == ind)]
+      else {
+        ind <- match(min_removal, removal_times)
+        infectious <- infectious[infectious != ind, drop=TRUE]
+        t <- min_removal
       }
     }
-    
   }
-    
+  
+  if (length(susceptible)>0) {
+    infections_list <- rbind(infections_list, cbind(susceptible, NA, NA, NA, NA, NA))
+  }
+  colnames(infections_list) <- c("Node ID", "Parent", "Etime", "Itime", "Rtime", "Stime")
+
   return(infections_list)
 }

@@ -1,10 +1,10 @@
 # Simulate an epidemic through a network of 30
-n_pop <- 30
+n_pop <- 50
 examplecoords <- lapply(1:n_pop, function(i) c(runif(1), runif(1)))
 spatialkernel <- function (d, kappa=1) {
   return(exp(-kappa * d))
 }
-#set.seed(101)
+set.seed(102)
 library(epinet)
 source("simulator.R")
 epi <- simulate_epidemic(
@@ -16,8 +16,6 @@ epi <- simulate_epidemic(
   ke = 1,
   thetae = 7,
   ps = 0.5,
-  thetas = 5, 
-  ks = 4,
   K = spatialkernel
 )
 
@@ -25,3 +23,9 @@ epi <- simulate_epidemic(
 epi_plot <- epi[, -6]
 plot.epidemic(epi_plot)
 
+# save transmission tree in newick format
+newick_tree <- epi2newick(epi)
+output_name <- "tree.tree"
+writeLines(newick_tree, output_name)
+print(epi[,6])
+print(length(epi[,6][epi[,6]!=Inf])/length(epi[,6]))

@@ -1,6 +1,6 @@
 
 
-simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai, ps, thetas= thetai, ks= ki, K) 
+simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai, ps, K) 
 {
   
   # Compute Euclidean distance matrix
@@ -10,9 +10,6 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
   # SEIR compartment sets
   infectious <- exposed <- removed <- c()
   susceptible <- array(1:N)
-  
-  # infectious thresholds
-  thresholds <- rexp(N, rate = 1)
   
   # records times of all events
   exposure_times <- rep(Inf, N)
@@ -70,9 +67,12 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
       # update times and compartments
       exposure_times[next_infected] <- t
       infectious_times[next_infected] <- rgamma(1, ke, scale = thetae) + exposure_times[next_infected]
-      sampling <- rbinom(n = 1, size = 1, prob = ps)
-      sampling_times[next_infected] <- ifelse(sampling, rgamma(1, ks, scale = thetas) + exposure_times[next_infected], Inf)
-      removal_times[next_infected] <- min(rgamma(1, ki, scale = thetai) + infectious_times[next_infected], sampling_times)
+      time_infected <- rgamma(1, ki, scale = thetai)
+      removal_times[next_infected] <- time_infected + infectious_times[next_infected]
+      # chosen so that (approx) ps samples occur before end of infectious period
+      sampling_rate <- -log(1-ps)/time_infected
+      sampling_time <- rexp(1, sampling_rate) + infectious_times[next_infected]
+      sampling_times[next_infected] <- ifelse(sampling_time<removal_times[next_infected], sampling_time, Inf)
       
       susceptible <- susceptible[susceptible != next_infected, drop=TRUE]
       exposed <- append(exposed, next_infected)
@@ -107,9 +107,9 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
     }
   }
   
-  if (length(susceptible)>0) {
-    infections_list <- rbind(infections_list, cbind(susceptible, NA, NA, NA, NA, NA))
-  }
+  #if (length(susceptible)>0) {
+    #infections_list <- rbind(infections_list, cbind(susceptible, NA, NA, NA, NA, NA))
+  #}
   colnames(infections_list) <- c("Node ID", "Parent", "Etime", "Itime", "Rtime", "Stime")
 
   return(infections_list)

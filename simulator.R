@@ -47,6 +47,7 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
       for (j in susceptible){
         transmission_rate <- transmission_rate + sum(sapply(infectious, function(i) K(dist_matr[i, j])))
       }
+      
       transmission_rate <- transmission_rate * beta / N
       transmission_time <- t + rexp(1, rate=transmission_rate)
     }
@@ -65,7 +66,7 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
       donor <- infectious[pair[2]]
     
       # update times and compartments
-      exposure_times[next_infected] <- t
+      exposure_times[next_infected] <- transmission_time
       infectious_times[next_infected] <- rgamma(1, ke, scale = thetae) + exposure_times[next_infected]
       time_infected <- rgamma(1, ki, scale = thetai)
       removal_times[next_infected] <- time_infected + infectious_times[next_infected]

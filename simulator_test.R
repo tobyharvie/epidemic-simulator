@@ -3,7 +3,8 @@ library(ape)
 library(phyclust)
 source("simulator.R")
 source('epi2binarynewick.R')
-#set.seed(102)
+source('data_preparation.R')
+set.seed(102)
 
 n_pop <- 30
 examplecoords <- lapply(1:n_pop, function(i) c(runif(1), runif(1)))
@@ -18,7 +19,7 @@ epi <- simulate_epidemic(
   thetai = 7, 
   ke = 1,
   thetae = 7,
-  ps = 0.5,
+  ps = 0.9,
   K = spatialkernel
 )
 
@@ -33,4 +34,8 @@ binarynewick <- gsub('\\[&type = "([A-Z])"\\]','',paste(epi2binarynewick(epi),';
 #edgelabels(tree$edge.length, bg="black", col="white", font=1)
 
 sequences <- seqgen(opts = "-mHKY -l40 -on -s0.2", newick.tree = binarynewick)
+
+data_preparation(epi,sequences)
+
+# write sampled data as NEXUS format for BEAST and SCOTTI inference
 

@@ -123,7 +123,6 @@ preprocessepi <- function (epi) {
   # thus sequence for 100*node corresponds to nth node label
   for (node in 1:nrow(epi)) {
     s = epi[node,'Stime']
-    print(epi)
     if (!is.na(s) && s != Inf) {
       epi <- rbind(epi, c((100*node),node, s, s, s, NA))
     }

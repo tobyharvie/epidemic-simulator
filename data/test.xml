@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate='Standard' beautistatus='' namespace="beast.core:beast.evolution.alignment:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.base.evolution.alignment:beast.pkgmgmt:beast.base.core:beast.base.inference:beast.base.evolution.tree.coalescent:beast.pkgmgmt:beast.base.core:beast.base.inference.util:beast.evolution.nuc:beast.base.evolution.operator:beast.base.inference.operator:beast.base.evolution.sitemodel:beast.base.evolution.substitutionmodel:beast.base.evolution.likelihood" required="BEAST.base v2.7.8:BREATH v0.0.1" version="2.7">
+        
+
+    <data
+id="filtered_sequences"
+spec="Alignment"
+name="alignment">
+                                
+        <sequence id="seq_10:2021-03-31" spec="Sequence" taxon="10:2021-03-31" totalcount="4" value="TTGCGACTGGGTATTATCCGATACCGTCGAGTTTTATTCT"/>
+                                
+        <sequence id="seq_11:2021-01-14" spec="Sequence" taxon="11:2021-01-14" totalcount="4" value="TTTGTTCAGGCATCGTCCACAATGCACAGTTGCGTGAGAC"/>
+                                
+        <sequence id="seq_12:2021-08-20" spec="Sequence" taxon="12:2021-08-20" totalcount="4" value="CGGATTTTGCACACTGAGGGATAACGATCCCACATGATGT"/>
+                                
+        <sequence id="seq_13:2021-01-09" spec="Sequence" taxon="13:2021-01-09" totalcount="4" value="TTTAACTCTATTAGTAGTGAACAAGACTAGGAAAGCGTCA"/>
+                                
+        <sequence id="seq_14:2021-02-12" spec="Sequence" taxon="14:2021-02-12" totalcount="4" value="TGGTCCTGAGACTCGAAGCTAAGGTTCTGCATCTCCACGC"/>
+                                
+        <sequence id="seq_15:2021-02-18" spec="Sequence" taxon="15:2021-02-18" totalcount="4" value="GAAATATGCCCATCGGACCGAACAGTTGAGAGAGTAGATC"/>
+                                
+        <sequence id="seq_16:2021-05-11" spec="Sequence" taxon="16:2021-05-11" totalcount="4" value="TTCGTACAGTATGACCCGGGGAAAGTGTGCCGTTCTGCAT"/>
+                                
+        <sequence id="seq_18:2021-03-31" spec="Sequence" taxon="18:2021-03-31" totalcount="4" value="GTCAGAACGATTAGGGCCAAGGTCCAGTGAATGCCGAAGA"/>
+                                
+        <sequence id="seq_19:2021-03-23" spec="Sequence" taxon="19:2021-03-23" totalcount="4" value="GCGAGATCTCCGGATCGTGTCTTCGTATATTGTAAATCAC"/>
+                                
+        <sequence id="seq_20:2021-06-08" spec="Sequence" taxon="20:2021-06-08" totalcount="4" value="CAAAGGAGAAGCCTCACCTGGACAGATAATACCGAAGGTG"/>
+                                
+        <sequence id="seq_21:2021-02-10" spec="Sequence" taxon="21:2021-02-10" totalcount="4" value="TTCCGCAAAAGTAGTTTACCGTAAGTTAGGCTGAACCTAA"/>
+                                
+        <sequence id="seq_23:2021-11-12" spec="Sequence" taxon="23:2021-11-12" totalcount="4" value="CTGGGGCTGGTGGTGTCGTGAAGGTGTGATCATGGCCTTC"/>
+                                
+        <sequence id="seq_24:2021-03-10" spec="Sequence" taxon="24:2021-03-10" totalcount="4" value="TTGGAACAGGATTACCTGTTTAGAGAGTGTGATTCCATAA"/>
+                                
+        <sequence id="seq_25:2021-08-28" spec="Sequence" taxon="25:2021-08-28" totalcount="4" value="GTAAACGCCATACGAACACCAGATGACAAAGTAGTACCAT"/>
+                                
+        <sequence id="seq_26:2021-06-17" spec="Sequence" taxon="26:2021-06-17" totalcount="4" value="CTCTTACCACTCGCGTGTCGATCTAATAGTCCGTCAAGTA"/>
+                                
+        <sequence id="seq_27:2021-12-14" spec="Sequence" taxon="27:2021-12-14" totalcount="4" value="CCGTCAGCTGTCAGGTGCAATGTACCGGCTGTCCCCGGTC"/>
+                                
+        <sequence id="seq_29:2021-11-25" spec="Sequence" taxon="29:2021-11-25" totalcount="4" value="TGGGTCATGTCACTAGCTCGAAGGGCTTACGTTTCATCAG"/>
+                                
+        <sequence id="seq_2:2020-12-28" spec="Sequence" taxon="2:2020-12-28" totalcount="4" value="CCACTTTCATCCGCCCAGGTAGAACATGACACAGACTTTG"/>
+                                
+        <sequence id="seq_30:2021-05-24" spec="Sequence" taxon="30:2021-05-24" totalcount="4" value="CGGCTCTGCAATCGCGCGGCCGCCTCCTCTCCTACGCGCA"/>
+                                
+        <sequence id="seq_3:2020-11-07" spec="Sequence" taxon="3:2020-11-07" totalcount="4" value="GGGTCCTGAGGCTCGAACCTCAGGTTCAACATCTCGACGG"/>
+                                
+        <sequence id="seq_5:2021-01-05" spec="Sequence" taxon="5:2021-01-05" totalcount="4" value="CCGCCGGCATCCACCCAGTAATAGGAAGATAAAGAGGTGG"/>
+                                
+        <sequence id="seq_6:2020-12-13" spec="Sequence" taxon="6:2020-12-13" totalcount="4" value="AAGGCATAGTTTAATCTAATTGAGGGAGAATTTTTCCATC"/>
+                                
+        <sequence id="seq_7:2021-02-05" spec="Sequence" taxon="7:2021-02-05" totalcount="4" value="CTCCGTGTCGGGACGGCGGGCGCCAATGGTTGTGTGTTGA"/>
+                                
+        <sequence id="seq_8:2021-05-21" spec="Sequence" taxon="8:2021-05-21" totalcount="4" value="CTTGAGACAGGGAACTTGAAGCGGCGTTACTTCGCCTCGT"/>
+                                
+        <sequence id="seq_9:2021-10-13" spec="Sequence" taxon="9:2021-10-13" totalcount="4" value="GGCAGGAGCGCGAAGGTTTTCTTATCCCACATTGCTGCGT"/>
+                            
+    </data>
+        
+
+
+
+
+
+    
+
+
+
+
+
+    
+
+
+
+    <map name="Uniform" >beast.base.inference.distribution.Uniform</map>
+
+    
+
+    <map name="Exponential" >beast.base.inference.distribution.Exponential</map>
+
+    
+
+    <map name="LogNormal" >beast.base.inference.distribution.LogNormalDistributionModel</map>
+
+    
+
+    <map name="Normal" >beast.base.inference.distribution.Normal</map>
+
+    
+
+    <map name="Beta" >beast.base.inference.distribution.Beta</map>
+
+    
+
+    <map name="Gamma" >beast.base.inference.distribution.Gamma</map>
+
+    
+
+    <map name="LaplaceDistribution" >beast.base.inference.distribution.LaplaceDistribution</map>
+
+    
+
+    <map name="prior" >beast.base.inference.distribution.Prior</map>
+
+    
+
+    <map name="InverseGamma" >beast.base.inference.distribution.InverseGamma</map>
+
+    
+
+    <map name="OneOnX" >beast.base.inference.distribution.OneOnX</map>
+
+    
+
+    <run id="mcmc" spec="MCMC" chainLength="5000000">
+            
+        <state id="state" spec="State" storeEvery="5000">
+                    
+            <tree id="Tree.t:filtered_sequences" spec="beast.base.evolution.tree.Tree" name="stateNode">
+                            
+                <trait id="dateTrait.t:filtered_sequences" spec="beast.base.evolution.tree.TraitSet" dateFormat="yyyy-M-dd" traitname="date" value="10:2021-03-31=2021-03-31,27:2021-12-14=2021-12-14,6:2020-12-13=2020-12-13,30:2021-05-24=2021-05-24,21:2021-02-10=2021-02-10,25:2021-08-28=2021-08-28,19:2021-03-23=2021-03-23,13:2021-01-09=2021-01-09,15:2021-02-18=2021-02-18,26:2021-06-17=2021-06-17,7:2021-02-05=2021-02-05,12:2021-08-20=2021-08-20,2:2020-12-28=2020-12-28,5:2021-01-05=2021-01-05,9:2021-10-13=2021-10-13,3:2020-11-07=2020-11-07,14:2021-02-12=2021-02-12,23:2021-11-12=2021-11-12,11:2021-01-14=2021-01-14,18:2021-03-31=2021-03-31,20:2021-06-08=2021-06-08,8:2021-05-21=2021-05-21,29:2021-11-25=2021-11-25,24:2021-03-10=2021-03-10,16:2021-05-11=2021-05-11">
+                                    
+                    <taxa id="TaxonSet.filtered_sequences" spec="TaxonSet">
+                                            
+                        <alignment idref="filtered_sequences"/>
+                                        
+                    </taxa>
+                                
+                </trait>
+                            
+                <taxonset idref="TaxonSet.filtered_sequences"/>
+                        
+            </tree>
+                    
+            <parameter id="clockRate.c:filtered_sequences" spec="parameter.RealParameter" lower="0.0" name="stateNode">1.0</parameter>
+                    
+            <parameter id="freqParameter.s:filtered_sequences" spec="parameter.RealParameter" dimension="4" lower="0.0" name="stateNode" upper="1.0">0.25</parameter>
+                    
+            <parameter id="kappa.s:filtered_sequences" spec="parameter.RealParameter" lower="0.0" name="stateNode">2.0</parameter>
+                    
+            <parameter id="proportionInvariant.s:filtered_sequences" spec="parameter.RealParameter" lower="0.0" name="stateNode" upper="1.0">0.01</parameter>
+                    
+            <parameter id="gammaShape.s:filtered_sequences" spec="parameter.RealParameter" lower="0.1" name="stateNode">1.0</parameter>
+                    
+            <parameter id="blockstart.t:filtered_sequences" spec="parameter.RealParameter" dimension="48" lower="0.0" name="stateNode" upper="1.0">0.5</parameter>
+                    
+            <parameter id="blockend.t:filtered_sequences" spec="parameter.RealParameter" dimension="48" lower="0.0" name="stateNode" upper="1.0">0.5</parameter>
+                    
+            <stateNode id="blockcount.t:filtered_sequences" spec="parameter.IntegerParameter" dimension="49" lower="-1" upper="100000">0</stateNode>
+                    
+            <parameter id="transmissionPopSize.t:filtered_sequences" spec="parameter.RealParameter" lower="0.0" name="stateNode" upper="Infinity">0.5</parameter>
+                    
+            <parameter id="transmissionOrigin.t:filtered_sequences" spec="parameter.RealParameter" name="stateNode">10.0</parameter>
+                
+        </state>
+            
+        <init id="RandomTree.t:filtered_sequences" spec="RandomTree" estimate="false" initial="@Tree.t:filtered_sequences" taxa="@filtered_sequences">
+                    
+            <populationModel id="ConstantPopulation0.t:filtered_sequences" spec="ConstantPopulation">
+                            
+                <parameter id="randomPopSize.t:filtered_sequences" spec="parameter.RealParameter" name="popSize">1.0</parameter>
+                        
+            </populationModel>
+                
+        </init>
+            
+        <distribution id="posterior" spec="CompoundDistribution">
+                    
+            <distribution id="prior" spec="CompoundDistribution">
+                            
+                <distribution id="transmissionLikelihood.t:filtered_sequences" spec="breath.distribution.TransmissionTreeLikelihood" blockcount="@blockcount.t:filtered_sequences" blockend="@blockend.t:filtered_sequences" blockstart="@blockstart.t:filtered_sequences" origin="@transmissionOrigin.t:filtered_sequences" tree="@Tree.t:filtered_sequences">
+                                    
+                    <populationModel id="ConstantTransmissionPopulation.t:filtered_sequences" spec="ConstantPopulation" popSize="@transmissionPopSize.t:filtered_sequences"/>
+                                    
+                    <parameter id="endTime.t:filtered_sequences" spec="parameter.RealParameter" name="endTime">-1.0</parameter>
+                                    
+                    <samplingHazard id="samplingHazard.t:filtered_sequences" spec="breath.distribution.GammaHazardFunction">
+                                            
+                        <shape id="Function$Constant" spec="Function$Constant" value="1.91"/>
+                                            
+                        <rate id="Function$Constant1" spec="Function$Constant" value="0.014"/>
+                                            
+                        <C id="Function$Constant.2" spec="Function$Constant" value="0.75"/>
+                                        
+                    </samplingHazard>
+                                    
+                    <transmissionHazard id="transmissionHazard.t:filtered_sequences" spec="breath.distribution.GammaHazardFunction">
+                                            
+                        <shape id="Function$Constant2" spec="Function$Constant" value="1.0"/>
+                                            
+                        <rate id="Function$Constant3" spec="Function$Constant" value="0.015"/>
+                                            
+                        <C id="Function$Constant.5" spec="Function$Constant" value="2.0"/>
+                                        
+                    </transmissionHazard>
+                                
+                </distribution>
+                            
+                <prior id="BlockCountPrior.t:filtered_sequences" name="distribution" x="@blockcount.t:filtered_sequences">
+                                    
+                    <Uniform id="Uniform.3" lower="-1.0" name="distr" upper="4.0"/>
+                                
+                </prior>
+                            
+                <prior id="BlockEndPrior.t:filtered_sequences" name="distribution" x="@blockend.t:filtered_sequences">
+                                    
+                    <Uniform id="Uniform.5" name="distr"/>
+                                
+                </prior>
+                            
+                <prior id="BlockStartPrior.t:filtered_sequences" name="distribution" x="@blockstart.t:filtered_sequences">
+                                    
+                    <Uniform id="Uniform.4" name="distr"/>
+                                
+                </prior>
+                            
+                <prior id="ClockPrior.c:filtered_sequences" name="distribution" x="@clockRate.c:filtered_sequences">
+                                    
+                    <Uniform id="Uniform.0" name="distr" upper="Infinity"/>
+                                
+                </prior>
+                            
+                <prior id="FrequenciesPrior.s:filtered_sequences" name="distribution" x="@freqParameter.s:filtered_sequences">
+                                    
+                    <distr id="Dirichlet.0" spec="distribution.Dirichlet">
+                                            
+                        <parameter id="RealParameter.5" spec="parameter.RealParameter" dimension="4" estimate="false" name="alpha">4.0 4.0 4.0 4.0</parameter>
+                                        
+                    </distr>
+                                
+                </prior>
+                            
+                <prior id="GammaShapePrior.s:filtered_sequences" name="distribution" x="@gammaShape.s:filtered_sequences">
+                                    
+                    <Exponential id="Exponential.0" name="distr">
+                                            
+                        <parameter id="RealParameter.0" spec="parameter.RealParameter" estimate="false" name="mean">1.0</parameter>
+                                        
+                    </Exponential>
+                                
+                </prior>
+                            
+                <prior id="KappaPrior.s:filtered_sequences" name="distribution" x="@kappa.s:filtered_sequences">
+                                    
+                    <LogNormal id="LogNormalDistributionModel.2" name="distr">
+                                            
+                        <parameter id="RealParameter.6" spec="parameter.RealParameter" estimate="false" name="M">1.0</parameter>
+                                            
+                        <parameter id="RealParameter.7" spec="parameter.RealParameter" estimate="false" name="S">1.25</parameter>
+                                        
+                    </LogNormal>
+                                
+                </prior>
+                            
+                <prior id="PropInvariantPrior.s:filtered_sequences" name="distribution" x="@proportionInvariant.s:filtered_sequences">
+                                    
+                    <Uniform id="Uniform.2" name="distr"/>
+                                
+                </prior>
+                            
+                <prior id="TransmissionOriginPrior.t:filtered_sequences" name="distribution" x="@transmissionOrigin.t:filtered_sequences">
+                                    
+                    <Uniform id="Uniform.7" name="distr" upper="Infinity"/>
+                                
+                </prior>
+                            
+                <prior id="TransmissionPopSizePrior.t:filtered_sequences" name="distribution" x="@transmissionPopSize.t:filtered_sequences">
+                                    
+                    <Uniform id="Uniform.6" lower="0.1" name="distr" upper="35.0"/>
+                                
+                </prior>
+                        
+            </distribution>
+                    
+            <distribution id="likelihood" spec="CompoundDistribution" useThreads="true">
+                            
+                <distribution id="treeLikelihood.filtered_sequences" spec="ThreadedTreeLikelihood" data="@filtered_sequences" tree="@Tree.t:filtered_sequences">
+                                    
+                    <siteModel id="SiteModel.s:filtered_sequences" spec="SiteModel" gammaCategoryCount="4" proportionInvariant="@proportionInvariant.s:filtered_sequences" shape="@gammaShape.s:filtered_sequences">
+                                            
+                        <parameter id="mutationRate.s:filtered_sequences" spec="parameter.RealParameter" estimate="false" lower="0.0" name="mutationRate">1.0</parameter>
+                                            
+                        <substModel id="hky.s:filtered_sequences" spec="HKY" kappa="@kappa.s:filtered_sequences">
+                                                    
+                            <frequencies id="estimatedFreqs.s:filtered_sequences" spec="Frequencies" frequencies="@freqParameter.s:filtered_sequences"/>
+                                                
+                        </substModel>
+                                        
+                    </siteModel>
+                                    
+                    <branchRateModel id="StrictClock.c:filtered_sequences" spec="beast.base.evolution.branchratemodel.StrictClockModel" clock.rate="@clockRate.c:filtered_sequences"/>
+                                
+                </distribution>
+                        
+            </distribution>
+                    
+            <distribution id="fossilCalibrations" spec="CompoundDistribution"/>
+                
+        </distribution>
+            
+        <operator id="StrictClockRateScaler.c:filtered_sequences" spec="AdaptableOperatorSampler" weight="1.5">
+                    
+            <parameter idref="clockRate.c:filtered_sequences"/>
+                    
+            <operator id="AVMNOperator.filtered_sequences" spec="kernel.AdaptableVarianceMultivariateNormalOperator" allowNonsense="true" beta="0.05" burnin="400" initial="800" weight="0.1">
+                            
+                <transformations id="AVMNSumTransform.filtered_sequences" spec="operator.kernel.Transform$LogConstrainedSumTransform">
+                                    
+                    <f idref="freqParameter.s:filtered_sequences"/>
+                                
+                </transformations>
+                            
+                <transformations id="AVMNLogTransform.filtered_sequences" spec="operator.kernel.Transform$LogTransform">
+                                    
+                    <f idref="clockRate.c:filtered_sequences"/>
+                                    
+                    <f idref="kappa.s:filtered_sequences"/>
+                                    
+                    <f idref="proportionInvariant.s:filtered_sequences"/>
+                                    
+                    <f idref="gammaShape.s:filtered_sequences"/>
+                                
+                </transformations>
+                            
+                <transformations id="AVMNNoTransform.filtered_sequences" spec="operator.kernel.Transform$NoTransform">
+                                    
+                    <f idref="Tree.t:filtered_sequences"/>
+                                
+                </transformations>
+                        
+            </operator>
+                    
+            <operator id="StrictClockRateScalerX.c:filtered_sequences" spec="kernel.BactrianScaleOperator" parameter="@clockRate.c:filtered_sequences" upper="10.0" weight="3.0"/>
+                
+        </operator>
+            
+        <operator id="strictClockUpDownOperator.c:filtered_sequences" spec="AdaptableOperatorSampler" weight="1.5">
+                    
+            <parameter idref="clockRate.c:filtered_sequences"/>
+                    
+            <tree idref="Tree.t:filtered_sequences"/>
+                    
+            <operator idref="AVMNOperator.filtered_sequences"/>
+                    
+            <operator id="strictClockUpDownOperatorX.c:filtered_sequences" spec="operator.kernel.BactrianUpDownOperator" scaleFactor="0.75" weight="3.0">
+                            
+                <up idref="clockRate.c:filtered_sequences"/>
+                            
+                <down idref="Tree.t:filtered_sequences"/>
+                        
+            </operator>
+                
+        </operator>
+            
+        <operator id="FrequenciesExchanger.s:filtered_sequences" spec="AdaptableOperatorSampler" weight="0.05">
+                    
+            <parameter idref="freqParameter.s:filtered_sequences"/>
+                    
+            <operator idref="AVMNOperator.filtered_sequences"/>
+                    
+            <operator id="FrequenciesExchangerX.s:filtered_sequences" spec="operator.kernel.BactrianDeltaExchangeOperator" delta="0.01" weight="0.1">
+                            
+                <parameter idref="freqParameter.s:filtered_sequences"/>
+                        
+            </operator>
+                
+        </operator>
+            
+        <operator id="KappaScaler.s:filtered_sequences" spec="AdaptableOperatorSampler" weight="0.05">
+                    
+            <parameter idref="kappa.s:filtered_sequences"/>
+                    
+            <operator idref="AVMNOperator.filtered_sequences"/>
+                    
+            <operator id="KappaScalerX.s:filtered_sequences" spec="kernel.BactrianScaleOperator" parameter="@kappa.s:filtered_sequences" scaleFactor="0.1" upper="10.0" weight="0.1"/>
+                
+        </operator>
+            
+        <operator id="proportionInvariantScaler.s:filtered_sequences" spec="AdaptableOperatorSampler" weight="0.05">
+                    
+            <parameter idref="proportionInvariant.s:filtered_sequences"/>
+                    
+            <operator idref="AVMNOperator.filtered_sequences"/>
+                    
+            <operator id="proportionInvariantScalerX.s:filtered_sequences" spec="kernel.BactrianScaleOperator" parameter="@proportionInvariant.s:filtered_sequences" scaleFactor="0.5" upper="10.0" weight="0.1"/>
+                
+        </operator>
+            
+        <operator id="gammaShapeScaler.s:filtered_sequences" spec="AdaptableOperatorSampler" weight="0.05">
+                    
+            <parameter idref="gammaShape.s:filtered_sequences"/>
+                    
+            <operator idref="AVMNOperator.filtered_sequences"/>
+                    
+            <operator id="gammaShapeScalerX.s:filtered_sequences" spec="kernel.BactrianScaleOperator" parameter="@gammaShape.s:filtered_sequences" scaleFactor="0.5" upper="10.0" weight="0.1"/>
+                
+        </operator>
+            
+        <operator id="transmissionLikelihoodBICEPSEpochTop.t:filtered_sequences" spec="EpochFlexOperator" scaleFactor="0.1" tree="@Tree.t:filtered_sequences" weight="2.0"/>
+            
+        <operator id="transmissionLikelihoodBICEPSEpochAll.t:filtered_sequences" spec="EpochFlexOperator" fromOldestTipOnly="false" scaleFactor="0.1" tree="@Tree.t:filtered_sequences" weight="2.0"/>
+            
+        <operator id="transmissionLikelihoodBICEPSTreeFlex.t:filtered_sequences" spec="TreeStretchOperator" scaleFactor="0.01" tree="@Tree.t:filtered_sequences" weight="2.0"/>
+            
+        <operator id="transmissionLikelihoodTreeRootScaler.t:filtered_sequences" spec="kernel.BactrianScaleOperator" rootOnly="true" scaleFactor="0.1" tree="@Tree.t:filtered_sequences" upper="10.0" weight="3.0"/>
+            
+        <operator id="transmissionLikelihoodUniformOperator.t:filtered_sequences" spec="kernel.BactrianNodeOperator" tree="@Tree.t:filtered_sequences" weight="30.0"/>
+            
+        <operator id="transmissionLikelihoodSubtreeSlide.t:filtered_sequences" spec="kernel.BactrianSubtreeSlide" tree="@Tree.t:filtered_sequences" weight="15.0"/>
+            
+        <operator id="transmissionLikelihoodNarrow.t:filtered_sequences" spec="Exchange" tree="@Tree.t:filtered_sequences" weight="15.0"/>
+            
+        <operator id="transmissionLikelihoodWide.t:filtered_sequences" spec="Exchange" isNarrow="false" tree="@Tree.t:filtered_sequences" weight="3.0"/>
+            
+        <operator id="transmissionLikelihoodWilsonBalding.t:filtered_sequences" spec="WilsonBalding" tree="@Tree.t:filtered_sequences" weight="3.0"/>
+            
+        <operator id="transmissionInfectionMover.t:filtered_sequences" spec="breath.operator.InfectionMover" blockcount="@blockcount.t:filtered_sequences" blockend="@blockend.t:filtered_sequences" blockstart="@blockstart.t:filtered_sequences" likelihood="@transmissionLikelihood.t:filtered_sequences" weight="50.0"/>
+            
+        <operator id="transmissionBlockOperator.t:filtered_sequences" spec="breath.operator.BlockOperator" blockcount="@blockcount.t:filtered_sequences" blockend="@blockend.t:filtered_sequences" blockstart="@blockstart.t:filtered_sequences" tree="@Tree.t:filtered_sequences" weight="50.0"/>
+            
+        <operator id="transmissionPopSizeScaler.t:filtered_sequences" spec="kernel.BactrianScaleOperator" parameter="@transmissionPopSize.t:filtered_sequences" scaleFactor="0.1" upper="10.0" weight="5.0"/>
+            
+        <operator id="transmissionOriginScaler.t:filtered_sequences" spec="kernel.BactrianScaleOperator" parameter="@transmissionOrigin.t:filtered_sequences" scaleFactor="0.1" upper="10.0" weight="0.5"/>
+            
+        <logger id="tracelog" spec="Logger" fileName="$(filebase).log" logEvery="1000" model="@posterior" sanitiseHeaders="true" sort="smart">
+                    
+            <log idref="posterior"/>
+                    
+            <log idref="likelihood"/>
+                    
+            <log idref="prior"/>
+                    
+            <log idref="treeLikelihood.filtered_sequences"/>
+                    
+            <log id="TreeHeight.t:filtered_sequences" spec="beast.base.evolution.tree.TreeStatLogger" tree="@Tree.t:filtered_sequences"/>
+                    
+            <log idref="clockRate.c:filtered_sequences"/>
+                    
+            <log idref="freqParameter.s:filtered_sequences"/>
+                    
+            <log idref="kappa.s:filtered_sequences"/>
+                    
+            <log idref="proportionInvariant.s:filtered_sequences"/>
+                    
+            <log idref="gammaShape.s:filtered_sequences"/>
+                    
+            <log idref="transmissionLikelihood.t:filtered_sequences"/>
+                    
+            <log idref="transmissionPopSize.t:filtered_sequences"/>
+                    
+            <log idref="transmissionOrigin.t:filtered_sequences"/>
+                
+        </logger>
+            
+        <logger id="screenlog" spec="Logger" logEvery="1000">
+                    
+            <log idref="posterior"/>
+                    
+            <log idref="likelihood"/>
+                    
+            <log idref="prior"/>
+                
+        </logger>
+            
+        <logger id="treelog.t:filtered_sequences" spec="Logger" fileName="$(filebase)-$(tree).trees" logEvery="1000" mode="tree">
+                    
+            <log id="TreeWithMetaDataLogger.t:filtered_sequences" spec="beast.base.evolution.TreeWithMetaDataLogger" tree="@Tree.t:filtered_sequences">
+                            
+                <metadata idref="blockstart.t:filtered_sequences"/>
+                            
+                <metadata idref="blockend.t:filtered_sequences"/>
+                            
+                <metadata idref="blockcount.t:filtered_sequences"/>
+                        
+            </log>
+                
+        </logger>
+            
+        <operatorschedule id="OperatorSchedule" spec="OperatorSchedule"/>
+        
+    </run>
+
+    
+
+</beast>

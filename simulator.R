@@ -73,7 +73,7 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
       # chosen so that (approx) ps samples occur before end of infectious period
       sampling_rate <- -log(1-ps)/time_infected
       sampling_time <- rexp(1, sampling_rate) + infectious_times[next_infected]
-      sampling_times[next_infected] <- ifelse(sampling_time<removal_times[next_infected], sampling_time, Inf)
+      sampling_times[next_infected] <- ifelse(sampling_time<removal_times[next_infected], sampling_time, NA)
       
       susceptible <- susceptible[susceptible != next_infected, drop=TRUE]
       exposed <- append(exposed, next_infected)

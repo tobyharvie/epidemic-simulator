@@ -1,6 +1,6 @@
-Input path: ./inputs\ 
-Output path: ./outputs\ 
-dnaInput path: C:/Users/tobyh/Documents/epidemic_simulator/ScITree\gen_inputs\ 
+Input path: ./ScITree/inputs\ 
+Output path: ./ScITree/outputs\ 
+dnaInput path: ./ScITree\gen_inputs\ 
 source_known	t_e_known	t_e_fixed	ab_known	cd_known	abk_known	lambda_known	nbpdiff_fixed	nbpdiff_init_true	te_init_true	source_init_true	fix_bg_inf	alpha_known	use_sample_te	use_sample_source	update_nbpdiff	update_te	update_individuals	backwardprob_max	updatefreq	unif_source_propose	only_beta_kappa	source_lhratio_only	lambda_init_true	use_beta_prior_exp	use_beta_prior_gamma	restrict_rank_te_0	restrict_rank_te_1	te_randomwalk	Remainder adjust 
 0	0	0	0	0	0	0	0	0	0	0	1	0	1	1	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0
 1532 Initial lambda 0.256

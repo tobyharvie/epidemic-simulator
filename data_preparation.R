@@ -45,7 +45,7 @@ nexus_out <- c(
 writeLines(nexus_out, "BREATH/seqs.nex")
 
 # calculate sampling shape and rate for sampling hazard
-stimes <- (epi[,6]-epi[,4])/max_time*1000
+stimes <- (epi[,6]-epi[,3])/max_time*1000
 sk <-mean(stimes,na.rm=TRUE)
 sv <-var(stimes,na.rm=TRUE)
 sa <-sk^2/sv #shape
@@ -66,8 +66,8 @@ tc <- mean(table(factor(epi[,2],levels=1:length(epi[,1]))))
 print(paste("transmission constant: ", tc))
 
 # sanity checks
-#curve(dgamma(x, shape = sa, scale = 1/sb),from = 0, to = max_time)
-#curve(dgamma(x, shape = ta, scale = 1/tb),from = 0, to = max_time)
+curve(dgamma(x, shape = sa, scale = 1/sb),from = 0, to = max_time)
+curve(dgamma(x, shape = ta, scale = 1/tb),from = 0, to = max_time)
 
 # ScITree requires FASTA
 matrix_lines_new <- sapply(matrix_lines, function(line) {
@@ -133,7 +133,7 @@ para.key.inits <- data.frame('alpha' = tb, #IMPORTANT
                              'lat_var' = thetae,
                              'c' = ki,
                              'd' = thetai,
-                             'k_1' = kappa,
+                             'k_1' = ka,
                              'mu_1' = 3e-05, # next 3 realted to substitution, example
                              'mu_2' = 1e-06,
                              'p_ber' = 0.2,
@@ -189,6 +189,13 @@ para.sf <- data.frame('alpha_sf' = tb*1.5, # do some more work on this
                       'nu_inf_sf' = 0.25,
                       'tau_susc_sf' = 0.25,
                       'beta_m_sf' = 1)
+outdir <- "./ScITree/inputs/"
+write.csv(covariates,     paste(outdir,"covariates.csv",sep=''),     row.names = FALSE)
+write.csv(moves.inputs,   paste(outdir,"moves.inputs.csv",sep=''),   row.names = FALSE)
+write.csv(pars.aux,       paste(outdir,"pars.aux.csv",sep=''),       row.names = FALSE)
+write.csv(para.key.inits, paste(outdir,"para.key.inits.csv",sep=''), row.names = FALSE)
+write.csv(para.priors,    paste(outdir,"para.priors.csv",sep=''),    row.names = FALSE)
+write.csv(para.sf,        paste(outdir,"para.sf.csv",sep=''),        row.names = FALSE)
 
 # ---------------
 # SCOTTI Pipeline

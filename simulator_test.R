@@ -5,17 +5,19 @@ source("simulator.R")
 source('epi2binarynewick.R')
 source('plotting.R')
 
+set.seed(8)
+
 # simulation
-n_pop <- 99
+n_pop <- 50
 coords <- lapply(1:n_pop, function(i) c(runif(1), runif(1)))
-ki <- 3; thetai <- 7; ke <- 3; thetae <- 7; ps <- 0.9; kappa <- 17
-spatialkernel <- function (d, kappa=17) {
+ki <- 3; thetai <- 7; ke <- 3; thetae <- 7; ps <- 0.9; ka=10
+spatialkernel <- function (d, kappa=10) {
   return(exp(-kappa * d))
 }
 epi <- simulate_epidemic(
   C = coords, 
   N = n_pop, 
-  beta = 10,
+  beta = 3,
   ki = ki, 
   thetai = thetai, 
   ke = ke,

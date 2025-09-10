@@ -42,7 +42,7 @@ nexus_out <- c(
   "    FORMAT DATATYPE=DNA MISSING=? GAP=-;",
   "MATRIX",matrix_lines_new,";","END;"
 )
-writeLines(nexus_out, "data/seqs.nex")
+writeLines(nexus_out, "BREATH/seqs.nex")
 
 # calculate sampling shape and rate for sampling hazard
 stimes <- (epi[,6]-epi[,4])/max_time*1000
@@ -84,7 +84,7 @@ matrix_lines_new <- sapply(matrix_lines, function(line) {
 fasta_out <- c(
   matrix_lines_new
 )
-writeLines(fasta_out, "gen_inputs/seqs.fasta")
+writeLines(fasta_out, "ScITree/gen_inputs/seqs.fasta")
 
 # -----------------
 # SCITREE inputs
@@ -189,3 +189,28 @@ para.sf <- data.frame('alpha_sf' = tb*1.5, # do some more work on this
                       'nu_inf_sf' = 0.25,
                       'tau_susc_sf' = 0.25,
                       'beta_m_sf' = 1)
+
+# ---------------
+# SCOTTI Pipeline
+# ---------------
+# FASTA
+matrix_lines_new <- sapply(matrix_lines, function(line) {
+  node <- as.numeric(sub("^([0-9]+).*", "\\1", line))
+  seq <- sub("^[0-9]+\\s+", "", line)
+  # Build new label
+  if (!is.na(epi[epi[, 1] == node, 6])){
+    paste0('>', node, "\n", seq)
+  }
+  else{ paste0('')}
+})
+fasta_out <- c(
+  matrix_lines_new
+)
+writeLines(fasta_out, "SCOTTI/seqs.fasta")
+# sampling dates
+write.table(cbind(epi[complete.cases(epi),][,1],epi[complete.cases(epi),][,6]), file = "SCOTTI/dates.csv",sep = ",",row.names = FALSE, col.names = FALSE)
+# hosts .. unneeded?
+write.table(cbind(epi[complete.cases(epi),][,1],epi[complete.cases(epi),][,1]), file = "SCOTTI/hosts.csv",sep = ",",row.names = FALSE, col.names = FALSE)
+# earliest and latest times host in infection
+write.table(cbind(epi[complete.cases(epi),][,1],epi[complete.cases(epi),][,3],epi[complete.cases(epi),][,5]), file = "SCOTTI/hostTimes.csv",sep = ",",row.names = FALSE, col.names = FALSE)
+# use py script to generate xml

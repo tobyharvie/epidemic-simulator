@@ -1,6 +1,6 @@
 library(ScITree)
-dnaPath <- "C:/Users/tobyh/Documents/epidemic_simulator"
-sink(file = "inference_output.txt")
+dnaPath <- "C:/Users/tobyh/Documents/epidemic_simulator/ScITree"
+sink(file = "ScITree/inference_output.txt")
 infer.out<-infer(covariates = covariates,
                  moves.inputs = moves.inputs,
                  parsAux = pars.aux,

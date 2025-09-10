@@ -4,7 +4,7 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
 {
   
   # Compute Euclidean distance matrix
-  coords_mat <- do.call(rbind, examplecoords)
+  coords_mat <- do.call(rbind, C)
   dist_matr <- as.matrix(dist(coords_mat))
   
   # SEIR compartment sets
@@ -56,8 +56,8 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
     # check event time is before any other event
     if ((length(exposed)==0 || all(transmission_time < infectious_times[exposed])) &&
       (length(infectious)==0 || all(transmission_time < removal_times[infectious]))) {
-      # choose donor-recipient pair
-      dists <- dist_matr[susceptible, infectious, drop=FALSE]
+      # choose donor-recipient pair based on spatial kernel function
+      dists <- 1/K(dist_matr[susceptible, infectious, drop=FALSE])
       probs <- 1 / dists # shorter dist = higher prob
       probs <- probs / sum(probs)
       picked_index <- sample(length(probs), size = 1, prob = as.vector(probs))
@@ -71,6 +71,7 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
       time_infected <- rgamma(1, ki, scale = thetai)
       removal_times[next_infected] <- time_infected + infectious_times[next_infected]
       # chosen so that (approx) ps samples occur before end of infectious period
+      # assume sampling happens during infectious period (not in exposed period)
       sampling_rate <- -log(1-ps)/time_infected
       sampling_time <- rexp(1, sampling_rate) + infectious_times[next_infected]
       sampling_times[next_infected] <- ifelse(sampling_time<removal_times[next_infected], sampling_time, NA)
@@ -108,10 +109,10 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
     }
   }
   
-  #if (length(susceptible)>0) {
-    #infections_list <- rbind(infections_list, cbind(susceptible, NA, NA, NA, NA, NA))
-  #}
+  if (length(susceptible)>0) {
+    infections_list <- rbind(infections_list, cbind(susceptible, NA, NA, NA, NA, NA))
+  }
   colnames(infections_list) <- c("Node ID", "Parent", "Etime", "Itime", "Rtime", "Stime")
 
-  return(infections_list)
+  return(round(infections_list,3))
 }

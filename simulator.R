@@ -21,16 +21,21 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
   init <- sample(1:N, 1)
   infectious <- append(infectious, init)
   susceptible <- susceptible[!(susceptible == init)]
-  
+
   # times for first infected
   exposure_times[init] <- 0
-  infectious_times[init] <- rgamma(1, ke, scale = thetae) + exposure_times[init]
-  sampling <- rbinom(n = 1, size = 1, prob = ps)
-  sampling_times[init] <- Inf #ifelse(sampling, rgamma(1, ks+10, scale = thetas) + exposure_times[init], Inf)
+  time_infected <- rgamma(1, ke, scale = thetae)
+  infectious_times[init] <- time_infected + exposure_times[init]
   removal_times[init] <- min(rgamma(1, ki, scale = thetai) + infectious_times[init], sampling_times)
+  sampling <- rbinom(n = 1, size = 1, prob = ps)
+  #sampling_times[init] <- ifelse(sampling, rgamma(1, ks+10, scale = thetas) + exposure_times[init], NA)
+  sampling_rate <- -log(1-ps)/time_infected
+  sampling_time <- rexp(1, sampling_rate) + infectious_times[init]
+  sampling_times[init] <- ifelse(sampling_time<removal_times[init], sampling_time, NA)
+
   
   # create infection list (Node index, donor index, exposed time, infectious time, removed time, sampled time)
-  infections_list <- matrix(c(init, NA, 0, infectious_times[init], removal_times[init], NA), nrow = 1)
+  infections_list <- matrix(c(init, NA, 0, infectious_times[init], removal_times[init], sampling_times[init]), nrow = 1)
   # set current time
   t <- infectious_times[init]
 

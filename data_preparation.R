@@ -7,12 +7,12 @@ lines <- unlist(strsplit(nexus_str, "\n"))
 labelled <- grep("^[[:alnum:]_]+", lines, value = TRUE)
 # Extract numeric labels
 labels <- suppressWarnings(as.numeric(sub("^([0-9]+).*", "\\1", labelled)))
-# Filter multiples of 100
-keep <- labelled[!is.na(labels) & labels %% 100 == 0]
-# Replace the numeric labels with divided-by-100 labels
+# Filter multiples of (n_pop+1)
+keep <- labelled[!is.na(labels) & labels %% (n_pop+1) == 0]
+# Replace the numeric labels with divided-by-(n_pop+1) labels
 keep_div <- sapply(keep, function(line) {
   num <- as.numeric(sub("^([0-9]+).*", "\\1", line))
-  new_num <- num / 100
+  new_num <- num / (n_pop+1)
   sub("^[0-9]+", new_num, line)
 })
 # Collapse back into a string

@@ -5,34 +5,36 @@ source("simulator.R")
 source('epi2binarynewick.R')
 source('plotting.R')
 
-set.seed(8)
+#set.seed(8)
 
 # simulation
-n_pop <- 50
+n_pop <- 5
 coords <- lapply(1:n_pop, function(i) c(runif(1), runif(1)))
-ki <- 3; thetai <- 7; ke <- 3; thetae <- 7; ps <- 0.9; ka=10
-spatialkernel <- function (d, kappa=10) {
+ki <- 3; thetai <- 7; ke <- 3; thetae <- 7; ps <- 1; ka=4
+spatialkernel <- function (d, kappa=5) {
   return(exp(-kappa * d))
 }
-epi <- simulate_epidemic(
-  C = coords, 
-  N = n_pop, 
-  beta = 3,
-  ki = ki, 
-  thetai = thetai, 
-  ke = ke,
-  thetae = thetae,
-  ps = ps,
-  K = spatialkernel
-)
-plot.spatial(coords, epi)
+repeat{
+  epi <- simulate_epidemic(
+    C = coords, 
+    N = n_pop, 
+    beta = 1.5,
+    ki = ki, 
+    thetai = thetai, 
+    ke = ke,
+    thetae = thetae,
+    ps = ps,
+    K = spatialkernel
+  )
+  if (!is.na(epi[2,2])) { break }
+}
+#plot.spatial(coords, epi)
 newick <- newick_tree(epi)
-nbases <- 100
-sequences <- seqgen(opts = paste("-mHKY -l",nbases," -on -s0.1",sep=''), newick.tree = newick)
-
+nbases <- 1000
+#sequences <- seqgen(opts = paste("-mHKY -l1000",nbases," -on -s0.001",sep=''), newick.tree = newick)
 # plotting 
 plot.epidemic(epi[,-6])
-plot.spatial(coords, epi)
+#plot.spatial(coords, epi)
 #plot.phylo(newick)
 
 # epinet (for comparison)
@@ -44,7 +46,7 @@ plot.spatial(coords, epi)
 #plot.epidemic(epi2)
 
 # data pipelines for analysis
-source("./data_preparation.R")
+#source("./data_preparation.R")
 
 # write sampled data as NEXUS format for BEAST and SCOTTI inference
 

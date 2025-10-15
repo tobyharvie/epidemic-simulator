@@ -7,12 +7,12 @@ lines <- unlist(strsplit(nexus_str, "\n"))
 labelled <- grep("^[[:alnum:]_]+", lines, value = TRUE)
 # Extract numeric labels
 labels <- suppressWarnings(as.numeric(sub("^([0-9]+).*", "\\1", labelled)))
-# Filter multiples of (n_pop+1)
-keep <- labelled[!is.na(labels) & labels %% (n_pop+1) == 0]
-# Replace the numeric labels with divided-by-(n_pop+1) labels
+# Filter multiples of (n_pop*100)
+keep <- labelled[!is.na(labels) & labels %% (100) == 0]
+# Replace the numeric labels with divided-by-(n_pop*100) labels
 keep_div <- sapply(keep, function(line) {
   num <- as.numeric(sub("^([0-9]+).*", "\\1", line))
-  new_num <- num / (n_pop+1)
+  new_num <- num / (100)
   sub("^[0-9]+", new_num, line)
 })
 # Collapse back into a string
@@ -91,7 +91,7 @@ writeLines(fasta_out, "ScITree/gen_inputs/seqs.fasta")
 #-------------------
 
 # covariates
-covariates <- cbind(epi[,1], NA, NA, epi[,3],epi[,4],epi[,5], NA, NA, NA)
+covariates <- cbind(epi[,1], NA, NA, epi[,3],epi[,4],epi[,5], 1, 1, NA)
 colnames(covariates) <- c("k","coor_x","coor_y","t_e","t_i","t_r","ftype0","herdn","initial_source")
 unobserved <- c()
 for (i in 1:nrow(epi)){
@@ -104,7 +104,9 @@ for (i in 1:nrow(epi)){
   if (is.na(covariates[i,5])) { covariates[i,5]=9e+10 }
   if (is.na(covariates[i,6])) { covariates[i,6]=9e+10 }
 }
-covariates <- covariates[-unobserved,]
+if (length(unobserved)>0){
+  covariates <- covariates[-unobserved,]
+}
 covariates <- as.data.frame(covariates)
 moves.inputs <- as.data.frame(matrix(NA, nrow = 100, ncol = 3))
 pars.aux <- data.frame('n' = nrow(covariates),

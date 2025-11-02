@@ -1,5 +1,3 @@
-
-
 simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai, ps, K) 
 {
   
@@ -16,29 +14,29 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
   infectious_times <- rep(Inf, N)
   sampling_times <- rep(Inf, N)
   removal_times <- rep(Inf, N)
-
+  
   # initialize first infection
   init <- sample(1:N, 1)
   infectious <- append(infectious, init)
   susceptible <- susceptible[!(susceptible == init)]
-
+  
   # times for first infected
   exposure_times[init] <- 0
   time_infected <- rgamma(1, ke, scale = thetae)
   infectious_times[init] <- time_infected + exposure_times[init]
-  removal_times[init] <- min(rgamma(1, ki, scale = thetai) + infectious_times[init], sampling_times)
-  sampling <- rbinom(n = 1, size = 1, prob = ps)
+  #removal_times[init] <- min(rgamma(1, ki, scale = thetai) + infectious_times[init], sampling_times)
+  removal_times[init] <- rgamma(1, ki, scale = thetai) + infectious_times[init]
+  #sampling <- rbinom(n = 1, size = 1, prob = ps)
   #sampling_times[init] <- ifelse(sampling, rgamma(1, ks+10, scale = thetas) + exposure_times[init], NA)
-  sampling_rate <- -log(1-ps)/time_infected
-  sampling_time <- rexp(1, sampling_rate) + infectious_times[init]
-  sampling_times[init] <- ifelse(sampling_time<removal_times[init], sampling_time, NA)
-
-  
+  #sampling_rate <- -log(1-ps)/time_infected
+  #sampling_time <- rexp(1, sampling_rate) + infectious_times[init]
+  #sampling_times[init] <- ifelse(sampling_time<removal_times[init], sampling_time, NA)
+  sampling_times[init] <- ifelse(runif(1)<ps, runif(1)*time_infected+infectious_times[init], NA)
   # create infection list (Node index, donor index, exposed time, infectious time, removed time, sampled time)
   infections_list <- matrix(c(init, NA, 0, infectious_times[init], removal_times[init], sampling_times[init]), nrow = 1)
   # set current time
   t <- infectious_times[init]
-
+  
   # simulate rest of outbreak
   for (x in 2:(3*N)) {
     
@@ -60,16 +58,17 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
     
     # check event time is before any other event
     if ((length(exposed)==0 || all(transmission_time < infectious_times[exposed])) &&
-      (length(infectious)==0 || all(transmission_time < removal_times[infectious]))) {
+        (length(infectious)==0 || all(transmission_time < removal_times[infectious]))) {
       # choose donor-recipient pair based on spatial kernel function
       dists <- 1/K(dist_matr[susceptible, infectious, drop=FALSE])
       probs <- 1 / dists # shorter dist = higher prob
       probs <- probs / sum(probs)
+      #print(probs)
       picked_index <- sample(length(probs), size = 1, prob = as.vector(probs))
       pair <- arrayInd(picked_index, dim(probs))
       next_infected <- susceptible[pair[1]]
       donor <- infectious[pair[2]]
-    
+      
       # update times and compartments
       exposure_times[next_infected] <- transmission_time
       infectious_times[next_infected] <- rgamma(1, ke, scale = thetae) + exposure_times[next_infected]
@@ -77,16 +76,18 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
       removal_times[next_infected] <- time_infected + infectious_times[next_infected]
       # chosen so that (approx) ps samples occur before end of infectious period
       # assume sampling happens during infectious period (not in exposed period)
-      sampling_rate <- -log(1-ps)/time_infected
-      sampling_time <- rexp(1, sampling_rate) + infectious_times[next_infected]
-      sampling_times[next_infected] <- ifelse(sampling_time<removal_times[next_infected], sampling_time, NA)
+      #sampling_rate <- -log(1-ps)/time_infected
+      #sampling_time <- rexp(1, sampling_rate) + infectious_times[next_infected]
+      #sampling_times[next_infected] <- ifelse(sampling_time<removal_times[next_infected], sampling_time, NA)
+      sampling_times[next_infected] <- ifelse(runif(1)<ps, time_infected+runif(1)*time_infected+infectious_times[next_infected], NA)
+      #if (!is.na(sampling_times[next_infected])) {removal_times[next_infected] <- min(removal_times[next_infected], sampling_times[next_infected])}
       
       susceptible <- susceptible[susceptible != next_infected, drop=TRUE]
       exposed <- append(exposed, next_infected)
-    
+      
       infections_list <- rbind(infections_list, c(next_infected, donor, exposure_times[next_infected], infectious_times[next_infected], removal_times[next_infected], sampling_times[next_infected]))
       t <- transmission_time
-    
+      
     }
     # else another event occurs first (e -> i or i -> r)
     else{
@@ -118,6 +119,6 @@ simulate_epidemic <- function (C, N, beta, ki, thetai, ke = ki, thetae = thetai,
     infections_list <- rbind(infections_list, cbind(susceptible, NA, NA, NA, NA, NA))
   }
   colnames(infections_list) <- c("Node ID", "Parent", "Etime", "Itime", "Rtime", "Stime")
-
+  
   return(round(infections_list,3))
 }

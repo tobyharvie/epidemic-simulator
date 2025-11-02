@@ -1,2 +1,0 @@
-n,kernel_type,coord_type,t_max,unassigned_time,processes,n_seq,n_base,n_iterations,n_frequ,n_output_source,n_output_gm,n_cout,opt_latgamma,opt_k80,opt_betaij,opt_ti_update,opt_mov,debug
-79,exponential,cartesian,309.587,9e+10,1,1,100,1e+05,10,1000,2000,1000,1,0,0,0,0,0

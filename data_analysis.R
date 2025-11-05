@@ -147,7 +147,6 @@ max_prob_accuracy <- function (epi,m){
   if (all(is.na(accuracy2))) return(accuracy1)
   
   accuracy <- (accuracy1*nrow(na.omit(compare_df))+accuracy2*(nrow(compare_df)-nrow(na.omit(compare_df))))/nrow(compare_df)
-  
   return(accuracy)
 }
 calibration <- function (epi,m) {
@@ -321,7 +320,7 @@ combine_calib <- function(calib) {
 plot_acc <- function(accs,title="Average Accuracy per ps (50–100)",ylab="Average accuracy") {
   ps_values <- 50:100
   split_acc <- split(accs, rep(ps_values, each = 2))
-  print(split_acc)
+  #print(split_acc)
   avg_acc <- sapply(split_acc, function(x) mean(x, na.rm = TRUE))
   plot(
     ps_values,
@@ -336,9 +335,9 @@ plot_acc <- function(accs,title="Average Accuracy per ps (50–100)",ylab="Avera
   )
 }
 plot_accs <- function(accs1, accs2, 
-                     title = "Average Accuracy per ps (50–100)", 
-                     ylab = "Average accuracy",
-                     labels = c("Accuracy Set 1", "Accuracy Set 2")) {
+                      title = "Average Accuracy per ps (50–100)", 
+                      ylab = "Average accuracy",
+                      labels = c("Accuracy Set 1", "Accuracy Set 2")) {
   
   ps_values <- 50:100
   
@@ -415,11 +414,101 @@ plot_calib <- function(calib, title = "Calibration Plot") {
          bty = "n")
 }
 
+plot_accs_empirical <- function(accs1, accs2, empirical_ps,
+                                title = "Accuracy vs Empirical ps",
+                                ylab = "Accuracy",
+                                labels = c("Accuracy Set 1", "Accuracy Set 2")) {
+  # Remove NAs while preserving pair alignment
+  valid1 <- !is.na(accs1) & !is.na(empirical_ps)
+  valid2 <- !is.na(accs2) & !is.na(empirical_ps)
+  
+  accs1 <- accs1[valid1]
+  accs2 <- accs2[valid2]
+  ps1 <- empirical_ps[valid1]
+  ps2 <- empirical_ps[valid2]
+  
+  # Sort by empirical ps for smooth lines
+  ord1 <- order(ps1)
+  ord2 <- order(ps2)
+  
+  ps1 <- ps1[ord1]
+  accs1 <- accs1[ord1]
+  ps2 <- ps2[ord2]
+  accs2 <- accs2[ord2]
+  
+  # Plot first set
+  plot(
+    ps1, accs1,
+    type = "p",        # points only
+    pch = 19,
+    col = "blue",
+    ylim = c(0, 1),
+    xlab = "Empirical sampling probability",
+    ylab = ylab,
+    main = title
+  )
+  
+  # Add second set
+  points(ps2, accs2, pch = 17, col = "red")
+  
+  
+  # Add legend
+  legend(
+    "bottomright",
+    legend = labels,
+    col = c("blue", "red"),
+    pch = c(19, 17),
+    lty = 1,
+    cex = 0.9
+  )
+}
+
+plot_calib <- function(calib, title = "Calibration Plot") {
+  # Calculate bin midpoints from labels like [0.1,0.2)
+  mid_vals <- sapply(strsplit(gsub("\\[|\\)|\\]", "", calib$bin), ","), 
+                     function(x) mean(as.numeric(x)))
+  
+  # Create bar plot without axis labels first
+  bp <- barplot(
+    height = calib$weighted_proportion_correct,
+    col = "skyblue",
+    ylim = c(0, 1),
+    main = title,
+    ylab = "Proportion of predictions correct",
+    axes = TRUE,
+    names.arg = rep("", nrow(calib)) # suppress for manual labeling
+  )
+  
+  # Add red points at midpoints
+  points(bp, mid_vals, pch = 19, col = "red")
+  
+  # Add nicer slanted labels manually
+  text(
+    x = bp,
+    y = par("usr")[3] - 0.05, # below x-axis
+    labels = paste0(calib$bin, "\n(n=", calib$total_count, ")"),
+    srt = 80,                # rotate 45 degrees
+    adj = 1,
+    xpd = TRUE,
+    cex = 0.7                # smaller font
+  )
+  
+  # Add legend
+  legend("topleft",
+         legend = c("Observed", "Ideal"),
+         fill = c("skyblue", NA),
+         border = NA,
+         pch = c(NA, 19),
+         col = c("black", "red"),
+         bty = "n")
+}
+
 calc_statistics_from_data <- function (){
   #create_prob_mats('breath-trees')
   #create_prob_mats('scotti-trees')
   breath_calib <<- c()
   scotti_calib <<- c()
+  empirical_ps <<- rep(NA, 102)
   breath_acc <<- rep(NA, 102)
   scotti_acc <<- rep(NA, 102)
   breath_perc <<- rep(NA, 102)
@@ -429,24 +518,27 @@ calc_statistics_from_data <- function (){
       print(paste0("Analysing epidemic ",ps,"-",v))
       load(paste0("last2/ps-",ps,"-",v,"/epi-data-",ps/100,"-",v))
       
+      #print(nrow(epi[!is.na(epi[,6]),])/nrow(epi[!is.na(epi[,3]),]))
+      empirical_ps[2*(ps-50)+v] <<- nrow(epi[!is.na(epi[,6]),])/nrow(epi[!is.na(epi[,3]),])
+      
       epi <- as.data.frame(epi)
       epi$Node <- as.numeric(epi$'Node ID')
       epi$Parent <- as.numeric(epi$Parent)
       
-      breath_filename <- paste0("breath-trees3/breath-",ps,"-",v,"-seqs.matr")
-      scotti_filename <- paste0("scotti-trees3/scotti-",ps,"-",v,"_network.txt")
+      breath_filename <- paste0("breath-trees/breath-",ps,"-",v,"-seqs.matr")
+      scotti_filename <- paste0("scotti-trees/scotti-",ps,"-",v,"_network.txt")
       
       if (file.exists(paste0('./',breath_filename))){
         m <- handlebreathformat(paste0('./',breath_filename))
         accuracy <- max_prob_accuracy(epi,m)
         #print(paste0("Accuracy (most probable parent correct): ", round(accuracy,3)))
-        breath_acc[2*(ps-50)+v] <- accuracy
+        breath_acc[2*(ps-50)+v] <<- accuracy
         calib <- calibration(epi,m)
 
         breath_calib <<- append(breath_calib, list(calib))
         
         percentile <- percentile_accuracy(epi,m)
-        breath_perc[2*(ps-50)+v] <- percentile
+        breath_perc[2*(ps-50)+v] <<- percentile
         #print(paste0("Accuracy (predictioni in 95th percentile): ", round(percentile,3)))
       }
       else { print(paste0("Skipped ",breath_filename, ": file not found")) }
@@ -455,7 +547,7 @@ calc_statistics_from_data <- function (){
         m <- handlescottiformat(paste0('./',scotti_filename))
         accuracy <- max_prob_accuracy(epi,m)
         #print(paste0("Accuracy (most probable parent correct): ", round(accuracy,3)))
-        scotti_acc[2*(ps-50)+v] <- accuracy
+        scotti_acc[2*(ps-50)+v] <<- accuracy
         calib <- calibration(epi,m)
         #barplot(names.arg=paste0(calibration$bin,calibration$count),height=calibration$proportion_correct,col="blue",
         #     main = paste(filename,type),ylim=c(0,1),las=2)
@@ -463,7 +555,7 @@ calc_statistics_from_data <- function (){
         scotti_calib <<- append(scotti_calib, list(calib))
         
         percentile <- percentile_accuracy(epi,m)
-        scotti_perc[2*(ps-50)+v] <- percentile
+        scotti_perc[2*(ps-50)+v] <<- percentile
         #print(paste0("Accuracy (predictioni in 95th percentile): ", round(percentile,3)))
       }
       else { print(paste0("Skipped ",scotti_filename, ": file not found")) }
@@ -471,15 +563,18 @@ calc_statistics_from_data <- function (){
   }
 }
 
-calc_statistics_from_data()
+#calc_statistics_from_data()
 
 plot_acc(breath_acc,"breath accuracy (max likelihood)","accuracy")
 plot_acc(scotti_acc,"scotti accuracy (max likelihood)","accuracy")
 plot_acc(breath_perc,"breath accuracy (95 percentile)","accuracy")
 plot_acc(scotti_perc,"scotti accuracy (95 percentile)","accuracy")
 
-plot_accs(breath_acc,scotti_acc,title="Average Accuracy (truth is max-likelihood prediction)", labels=c('breath','scotti'))
+plot_accs(breath_acc,scotti_acc,title="Average Accuracy (truth is highest posterior probability prediction)", labels=c('breath','scotti'))
 plot_accs(breath_perc,scotti_perc,title="Average Accuracy (truth in 95th percentile of predictions)", labels=c('breath','scotti'))
+
+plot_accs_empirical(breath_acc,scotti_acc,empirical_ps,title="Average Accuracy (truth is highest posterior probability estimate)", labels=c('breath','scotti'))
+plot_accs_empirical(breath_perc,scotti_perc,empirical_ps,title="Average Accuracy (truth in 95th percentile of estimates)", labels=c('breath','scotti'))
 
 breath_combined_calib <- combine_calib(breath_calib)
 scotti_combined_calib <- combine_calib(scotti_calib)

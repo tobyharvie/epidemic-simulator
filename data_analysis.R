@@ -578,5 +578,5 @@ plot_accs_empirical(breath_perc,scotti_perc,empirical_ps,title="Average Accuracy
 
 breath_combined_calib <- combine_calib(breath_calib)
 scotti_combined_calib <- combine_calib(scotti_calib)
-plot_calib(breath_combined_calib, "BREATH Calibration")
-plot_calib(scotti_combined_calib, "SCOTTI Calibration")
+plot_calib(breath_combined_calib, "Robustness of BREATH Calibration")
+plot_calib(scotti_combined_calib, "Robustness of SCOTTI Calibration")

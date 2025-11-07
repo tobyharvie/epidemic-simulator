@@ -384,7 +384,7 @@ prepare_data <- function (epi,sequences,ps,dir,v){
   write.table(cbind(epi[complete.cases(epi),][,1],epi[complete.cases(epi),][,1]), file = paste(dir,"hosts.csv",sep=''),sep = ",",row.names = FALSE, col.names = FALSE)
   # earliest and latest times host in infection
   # assume sampled during infectious period
-  # thus earliest possible time infectious period + exposed period at 95th percentile
+  # thus earliest possible time infectious period + exposed period at 99th percentile
   lower <- qgamma(p = 0.99, shape=ke, scale = thetae) + qgamma(p = 0.99, shape=ki, scale = thetai)
   # for upper, we assume that we remove after sampling
   upper <- qgamma(p = 0.99, shape=ki, scale = thetai)

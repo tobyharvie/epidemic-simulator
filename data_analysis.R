@@ -364,16 +364,24 @@ plot_accs <- function(accs1, accs2,
   # Add second accuracy set
   lines(ps_values, avg_acc2, type = "b", pch = 17, col = "red")
   
+  # Add LOESS smoothing for both
+  smooth1 <- loess(avg_acc1 ~ ps_values)
+  smooth2 <- loess(avg_acc2 ~ ps_values)
+  
+  lines(ps_values, predict(smooth1), col = "blue", lwd = 2, lty = 2)
+  lines(ps_values, predict(smooth2), col = "red", lwd = 2, lty = 2)
+  
   # Add legend
   legend(
     "bottomright",
     legend = labels,
     col = c("blue", "red"),
     pch = c(19, 17),
-    lty = 1,
+    lty = c(1, 1),
     cex = 0.9
   )
 }
+
 plot_calib <- function(calib, title = "Calibration Plot") {
   # Calculate bin midpoints from labels like [0.1,0.2)
   mid_vals <- sapply(strsplit(gsub("\\[|\\)|\\]", "", calib$bin), ","), 
@@ -436,10 +444,10 @@ plot_accs_empirical <- function(accs1, accs2, empirical_ps,
   ps2 <- ps2[ord2]
   accs2 <- accs2[ord2]
   
-  # Plot first set
+  # Plot first set (points only)
   plot(
     ps1, accs1,
-    type = "p",        # points only
+    type = "p",
     pch = 19,
     col = "blue",
     ylim = c(0, 1),
@@ -448,9 +456,15 @@ plot_accs_empirical <- function(accs1, accs2, empirical_ps,
     main = title
   )
   
-  # Add second set
+  # Add second set (points only)
   points(ps2, accs2, pch = 17, col = "red")
   
+  # Add LOESS smoothing lines
+  smooth1 <- loess(accs1 ~ ps1)
+  smooth2 <- loess(accs2 ~ ps2)
+  
+  lines(ps1, predict(smooth1), col = "blue", lwd = 2, lty = 2)
+  lines(ps2, predict(smooth2), col = "red", lwd = 2, lty = 2)
   
   # Add legend
   legend(
@@ -462,6 +476,7 @@ plot_accs_empirical <- function(accs1, accs2, empirical_ps,
     cex = 0.9
   )
 }
+
 
 plot_calib <- function(calib, title = "Calibration Plot") {
   # Calculate bin midpoints from labels like [0.1,0.2)
@@ -565,18 +580,18 @@ calc_statistics_from_data <- function (){
 
 #calc_statistics_from_data()
 
-plot_acc(breath_acc,"breath accuracy (max likelihood)","accuracy")
-plot_acc(scotti_acc,"scotti accuracy (max likelihood)","accuracy")
-plot_acc(breath_perc,"breath accuracy (95 percentile)","accuracy")
-plot_acc(scotti_perc,"scotti accuracy (95 percentile)","accuracy")
+#plot_acc(breath_acc,"breath accuracy (max likelihood)","accuracy")
+#plot_acc(scotti_acc,"scotti accuracy (max likelihood)","accuracy")
+#plot_acc(breath_perc,"breath accuracy (95 percentile)","accuracy")
+#plot_acc(scotti_perc,"scotti accuracy (95 percentile)","accuracy")
 
-plot_accs(breath_acc,scotti_acc,title="Average Accuracy (truth is highest posterior probability prediction)", labels=c('breath','scotti'))
-plot_accs(breath_perc,scotti_perc,title="Average Accuracy (truth in 95th percentile of predictions)", labels=c('breath','scotti'))
+#plot_accs(breath_acc,scotti_acc,title="Average Accuracy (truth is highest posterior probability prediction)", labels=c('breath','scotti'))
+#plot_accs(breath_perc,scotti_perc,title="Average Accuracy (truth in 95th percentile of predictions)", labels=c('breath','scotti'))
 
 plot_accs_empirical(breath_acc,scotti_acc,empirical_ps,title="Average Accuracy (truth is highest posterior probability estimate)", labels=c('breath','scotti'))
 plot_accs_empirical(breath_perc,scotti_perc,empirical_ps,title="Average Accuracy (truth in 95th percentile of estimates)", labels=c('breath','scotti'))
 
 breath_combined_calib <- combine_calib(breath_calib)
 scotti_combined_calib <- combine_calib(scotti_calib)
-plot_calib(breath_combined_calib, "Robustness of BREATH Calibration")
-plot_calib(scotti_combined_calib, "Robustness of SCOTTI Calibration")
+plot_calib(breath_combined_calib, "BREATH Calibration")
+plot_calib(scotti_combined_calib, "SCOTTI Calibration")
